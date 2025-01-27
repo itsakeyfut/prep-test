@@ -32,6 +32,29 @@ impl Solution {
         }
         nums1.sort();
     }
+
+    /// Two Pointers
+    pub fn merge(nums1: &mut Vec<i32>, m: i32, nums2: &mut Vec<i32>, n: i32) {
+        // 結合後のインデックスを管理するポインタ
+        let mut merge_pos = (m + n - 1) as usize;
+        // nums1 と nums2 のそれぞれの末尾を指すポインタ
+        let mut nums1_pos = (m - 1) as i32;
+        let mut nums2_pos = (n - 1) as i32;
+
+        // nums2 の要素がすべて処理されるまでループ
+        while nums2_pos >= 0 {
+            if nums1_pos >= 0 && nums1[nums1_pos as usize] > nums2[nums2_pos as usize] {
+                // nums1 の現在位置の要素を末尾に移動
+                nums1[merge_pos] = nums1[nums1_pos as usize];
+                nums1_pos -= 1;
+            } else {
+                // nums2 の現在位置の要素を末尾に移動
+                nums1[merge_pos] = nums2[nums2_pos as usize];
+                nums2_pos -= 1;
+            }
+            merge_pos -= 1;
+        }
+    }
 }
 
 fn main() {
