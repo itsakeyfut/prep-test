@@ -12,6 +12,10 @@ impl Solution {
         // 各要素の出現回数をカウント
         for num in nums.iter() {
             // キーが存在しない場合は0を挿入
+            // entryは指定したキーに対応するエントリーを返す。返り値はEntry型のため、
+            // or_insert, and_modifyなどで操作できる。
+            // numがmapに存在しない場合は、0を追加する。
+            // つまり、numが初めてmapに現れた場合は、0を追加し、以降はその値を更新する。
             let cnt = map.entry(*num).or_insert(0);
             // 出現回数をインクリメント
             *cnt += 1;
