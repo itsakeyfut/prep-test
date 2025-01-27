@@ -28,6 +28,8 @@ impl Solution {
     /// Time Complexity: O(n) - dedupは配列全体を1回スキャンする
     /// Space Complexity: O(1) - インプレース処理
     pub fn remove_duplicates2(nums: &mut Vec<i32>) -> i32 {
+        // dedupは隣接する重複を削除するメソッドのため柔軟性は低いが
+        // 隣接する重複した要素の削除が要件であれば最適
         nums.dedup();
         nums.len() as i32
     }
