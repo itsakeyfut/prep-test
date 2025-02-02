@@ -1,18 +1,21 @@
+# Summary Ranges
+
+```rust
 struct Solution {}
 
 impl Solution {
     pub fn summary_ranges1(nums: Vec<i32>) -> Vec<String> {
         // 結果を格納するベクター
         let mut result = Vec::new();
-        
+
         // 空の入力の場合は空リストを返す
         if nums.is_empty() {
             return result;
         }
-    
+
         // 最初の要素を範囲の開始点として設定
         let mut start = nums[0];
-    
+
         // numsのインデックス1から順に処理
         for i in 1..nums.len() {
             // 連続している場合 (昇順かつ重複のないリストが前提)
@@ -27,14 +30,14 @@ impl Solution {
                 start = nums[i];
             }
         }
-    
+
         // 最後の範囲を追加
         if start == nums[nums.len() - 1] {
             result.push(start.to_string());
         } else {
             result.push(format!("{}->{}", start, nums[nums.len() - 1]));
         }
-    
+
         result
     }
 
@@ -79,3 +82,11 @@ fn main() {
     let nums = vec![0, 2, 3, 4, 6, 8, 9];
     println!("result = {:?}", Solution::summary_ranges2(nums));
 }
+```
+
+```bash
+result = ["0->2", "4->5", "7"]
+result = ["0", "2->4", "6", "8->9"]
+result = ["0->2", "4->5", "7"]
+result = ["0", "2->4", "6", "8->9"]
+```

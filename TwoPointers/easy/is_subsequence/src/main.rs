@@ -1,48 +1,51 @@
 struct Solution {}
 
 impl Solution {
-    pub fn is_subsequence(s: String, t: String) -> bool {
-        let mut i = 0;
-        let mut j = 0;
-        let s_chars: Vec<char> = s.chars().collect();
-        let t_chars: Vec<char> = t.chars().collect();
-        
-        // 両方の文字列を走査
-        while i < s.len() && j < t.len() {
-            // sの現在の文字とtの現在の文字が一致した場合、sの次の文字に進む
-            if s_chars[i] == t_chars[j] {
-                i += 1;
+    pub fn is_subsequence(sub: String, main: String) -> bool {
+        let mut sub_index = 0;
+        let mut main_index = 0;
+        let sub_chars: Vec<char> = sub.chars().collect();
+        let main_chars: Vec<char> = main.chars().collect();
+
+        // main を走査しながら、sub の文字列が順番に含まれているか確認
+        while sub_index < sub.len() && main_index < main.len() {
+            // sub の現在の文字と main の現在の文字が一致する場合、sub の次の文字へ進む
+            if sub_chars[sub_index] == main_chars[main_index] {
+                sub_index += 1;
             }
-
-            // 常にtの次の文字に進む
-            j += 1;
+            // main の次の文字へ進む
+            main_index += 1;
         }
-
-        // sのすべての文字が一致していれば、`i`はsの長さと等しいはず
-        i == s.len()
+        // sub の全ての文字が main 内で順番通りに現れていれば sub_index は sub の長さと等しければ true
+        sub_index == sub.len()
     }
 
-    pub fn is_subsequence2(s: String, t: String) -> bool {
-        let mut s_iter = s.chars();
-        let mut curr = s_iter.next(); // sの最初の文字を取得
+    pub fn is_subsequence2(sub: String, main: String) -> bool {
+        // sub の文字イテレータを作成
+        let mut sub_iter = sub.chars();
+        // sub の最初の文字を取得
+        let mut current_char = sub_iter.next();
 
-        for c in t.chars() {
-            if let Some(sc) = curr {
-                if sc == c {
-                    curr = s_iter.next(); // 次の文字に進む
+        for main_char in main.chars() {
+            if let Some(sub_char) = current_char {
+                // sub の現在文字と main の現在の文字が一致する場合、sub の次の文字へ進む
+                if sub_char == main_char {
+                    current_char = sub_iter.next();
                 }
             } else {
+                // sub のすべての文字が見つかった場合ループを終了
                 break;
             }
         }
-        // currがNoneになっていれば、すべての文字が一致
-        curr.is_none()
+        // current_char が None になっていれば、すべての文字が main 内で順番通りに現れたことを意味する
+        current_char.is_none()
     }
 
-    pub fn is_subsequence3(s: String, t: String) -> bool {
-        let mut iter = t.chars();
-        for c in s.chars() {
-            match iter.find(|&p| p == c) {
+    pub fn is_subsequence3(sub: String, main: String) -> bool {
+        let mut main_iter = main.chars();
+
+        for sub_char in sub.chars() {
+            match main_iter.find(|&main_char| main_char == sub_char) {
                 Some(_) => (),
                 None => return false,
             }
@@ -50,31 +53,45 @@ impl Solution {
         true
     }
 
-    pub fn is_subsequence4(s: String, t: String) -> bool {
-        let mut map: std::collections::HashMap<char, Vec<usize>> = std::collections::HashMap::new();
-        for (i, c) in t.chars().enumerate() {
-            match map.get_mut(&c) {
-                Some(li) => { li.push(i) },
-                None => { map.insert(c, vec![i]); }
+    pub fn is_subsequence4(sub: String, main: String) -> bool {
+        use std::collections::HashMap;
+
+        let mut char_pos: HashMap<char, Vec<usize>> = HashMap::new();
+
+        // main の各文字の出現回数を記録するハッシュマップを作成
+        for (index, main_char) in main.chars().enumerate() {
+            match char_pos.get_mut(&main_char) {
+                // 既に存在するキーなら追加
+                Some(pos) => { pos.push(index); },
+                // 新規キーなら作成
+                None => { char_pos.insert(main_char, vec![index]); }
             }
         }
-        let mut prev = 0;
-        for c in s.chars() {
-            match map.get(&c) {
+
+        // sub の各文字を main で検索する際の開始位置
+        let mut prev_index = 0;
+
+        for sub_char in sub.chars() {
+            match char_pos.get(&sub_char) {
+                // main に sub_char が含まれていなければ false
                 None => return false,
-                Some(li) => {
-                    match li.binary_search(&prev) {
-                        Ok(idx) => prev = li[idx] + 1,
-                        Err(ins_idex) => {
-                            if ins_idex == li.len() {
+                Some(pos) => {
+                    match pos.binary_search(&prev_index) {
+                        // 見つかった場合、次の位置へ
+                        Ok(idx) => prev_index = pos[idx] + 1,
+                        Err(insert_index) => {
+                            if insert_index == pos.len() {
+                                // 適切な位置が見つからなければ false
                                 return false;
                             }
-                            prev = li[ins_idex] + 1;
+                            // 次に検索する位置を更新
+                            prev_index = pos[insert_index] + 1;
                         }
                     }
                 }
             }
         }
+
         true
     }
 }
