@@ -1,3 +1,6 @@
+# Climbing Stairs
+
+```rust
 struct Solution {}
 
 impl Solution {
@@ -91,3 +94,11 @@ fn main() {
     let n = 2;
     println!("{}", Solution::climb_stairs4(n));
 }
+```
+
+```bash
+2
+2
+2
+2
+```
