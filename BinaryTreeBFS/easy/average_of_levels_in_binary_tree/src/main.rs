@@ -38,12 +38,12 @@ impl Solution {
             // 現在のレベルにあるノード数
             let current_level_size = node_queue.len();
             // 現在のレベルのノードの値の合計
-            let mut level_sum = 0;
+            let mut level_sum: i64 = 0;
             // 現在のレベルにあるノードをすべて処理
             for _ in 0..current_level_size {
                 if let Some(current_node) = node_queue.pop_front() {
                     // ノードの値を合計に加算
-                    level_sum += current_node.borrow().val;
+                    level_sum += current_node.borrow().val as i64;
                     // 左の子ノードが存在する場合、キューに追加
                     if let Some(left_child) = current_node.borrow_mut().left.take() {
                         node_queue.push_back(left_child);
@@ -59,6 +59,42 @@ impl Solution {
         }
         // 各レベルの平均値のベクタを返す
         level_averages
+    }
+
+    // DFS
+    pub fn average_of_levels_dfs(root: OptNode) -> Vec<f64> {
+        let mut sum_per_level = Vec::new();   // 各レベルの合計値
+        let mut count_per_level = Vec::new(); // 各レベルのノード数
+        
+        // DFS のヘルパー関数を定義
+        fn dfs(node: &OptNode, depth: usize, sum_per_level: &mut Vec<i64>, count_per_level: &mut Vec<i32>) {
+            if let Some(n) = node {
+                let n = n.borrow();
+                
+                // 現在の階層が初めて出現する場合、新しくベクタに追加
+                if sum_per_level.len() <= depth {
+                    sum_per_level.push(0);
+                    count_per_level.push(0);
+                }
+                
+                // 現在の階層の合計値とノード数を更新
+                sum_per_level[depth] += n.val as i64;
+                count_per_level[depth] += 1;
+
+                // 左右の子ノードを DFS で探索
+                dfs(&n.left, depth + 1, sum_per_level, count_per_level);
+                dfs(&n.right, depth + 1, sum_per_level, count_per_level);
+            }
+        }
+
+        // ルートノードから DFS を開始
+        dfs(&root, 0, &mut sum_per_level, &mut count_per_level);
+
+        // 各レベルの平均値を計算
+        sum_per_level.into_iter()
+            .zip(count_per_level.into_iter())
+            .map(|(sum, count)| sum as f64 / count as f64)
+            .collect()
     }
 }
 
@@ -88,4 +124,60 @@ fn main() {
         })))
     })));
     println!("{:?}", Solution::average_of_levels_bfs(root));
+
+    let root = Some(Rc::new(RefCell::new(TreeNode {
+        val: 3,
+        left: Some(Rc::new(RefCell::new(TreeNode {
+            val: 9,
+            left: Some(Rc::new(RefCell::new(TreeNode::new(15)))),
+            right: Some(Rc::new(RefCell::new(TreeNode::new(7)))),
+        }))),
+        right: Some(Rc::new(RefCell::new(TreeNode {
+            val: 20,
+            left: None,
+            right: None
+        })))
+    })));
+    println!("{:?}", Solution::average_of_levels_bfs(root));
+
+    /*
+     * DFS
+     */
+    let root = Some(Rc::new(RefCell::new(TreeNode {
+        val: 3,
+        left: Some(Rc::new(RefCell::new(TreeNode {
+            val: 9,
+            left: None,
+            right: None,
+        }))),
+        right: Some(Rc::new(RefCell::new(TreeNode {
+            val: 20,
+            left: Some(Rc::new(RefCell::new(TreeNode {
+                val: 15,
+                left: None,
+                right: None,
+            }))),
+            right: Some(Rc::new(RefCell::new(TreeNode {
+                val: 7,
+                left: None,
+                right: None
+            })))
+        })))
+    })));
+    println!("{:?}", Solution::average_of_levels_dfs(root));
+
+    let root = Some(Rc::new(RefCell::new(TreeNode {
+        val: 3,
+        left: Some(Rc::new(RefCell::new(TreeNode {
+            val: 9,
+            left: Some(Rc::new(RefCell::new(TreeNode::new(15)))),
+            right: Some(Rc::new(RefCell::new(TreeNode::new(7)))),
+        }))),
+        right: Some(Rc::new(RefCell::new(TreeNode {
+            val: 20,
+            left: None,
+            right: None
+        })))
+    })));
+    println!("{:?}", Solution::average_of_levels_dfs(root));
 }
