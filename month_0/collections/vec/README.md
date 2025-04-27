@@ -1,5 +1,7 @@
 # Vec
 
+Rust 版の動的配列
+
 - `push`, `pop`, `insert`, `remove` などが代表的
 - 配列に近いが、サイズが可変
 
