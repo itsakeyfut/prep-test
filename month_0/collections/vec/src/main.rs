@@ -21,4 +21,8 @@ fn main() {
 
     let result = v.iter().map(|elm| elm*2).collect::<Vec<_>>();
     println!("{:?}", result); // [2, 4, 6, 8, 10]
+
+    let mut v = vec![8, 9, 13, 11, 17, 2, 4];
+    v.sort();
+    println!("{:?}", v);
 }
