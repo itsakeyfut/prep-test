@@ -19,6 +19,7 @@ with the goal of solving LeetCode Hard problems consistently within 6 months.
 ### 📚 Month 0 (Week 1)
 
 **Review Rust basics and standard libraries**
+~
 
 - Vec, HashMap, BinaryHeap (Priority Queue), BTreeMap
 - Ownership, References (&, &mut, clone)
@@ -88,16 +89,15 @@ with the goal of solving LeetCode Hard problems consistently within 6 months.
 | Week | Focus                               |   Status    |
 | :--: | :---------------------------------- | :---------: |
 |  1   | Rust basics + simple array problems | In Progress |
-|  2   | HashMap, Two Pointers problems      |             |
-|  3   | DFS, BFS basics                     |             |
+|  2   | Rust basics                         | In Progress |
+|  3   | HashMap, Two Pointers problems      |             |
+|  4   | DFS, BFS basics                     |             |
 
 ---
 
 ## ✅ Solved Problems (LeetCode)
 
-- [x] 2025-04-28: 167. Two Sum II (Medium)
-- [x] 2025-04-28: 15. 3Sum (Medium)
-- [ ] 2025-04-29: 200. Number of Islands (Medium)
+- [x] placeholder YYYY-mm--dd: index. title (difficulty)
 
 (keep updating...)
 
@@ -108,13 +108,12 @@ with the goal of solving LeetCode Hard problems consistently within 6 months.
 1. Clone this repository:
 
 ```bash
-git clone https://github.com/your-username/rust-algo-practice.git
+git clone https://github.com/itsakeyfut/prep-test.git
 ```
 
 2. Navigate into the project folder.
 3. Each problem solution is categorized by topic under `/src/`.
 4. Each file includes:
-
-- Problem description
-- Thought process
-- Final Rust code
+   - Problem description
+   - Thought process
+   - Final Rust code
