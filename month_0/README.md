@@ -197,3 +197,31 @@ use std::rc::Rc;
 let a = Rc::new(5);
 let b = Rc::clone(&a);
 ```
+
+### RefCell<T>
+
+実行時に借用ルールを緩くする箱（通常コンパイル時にチェックされる「mutable な借用」などを実行時にチェックする）
+
+```rs
+use std::cell::RefCell;
+
+let x = RefCell::new(5);
+*x.borrow_mut() += 1;
+```
+
+### 🌟【まとめ】ツリー Node を書くときの典型例
+
+```rs
+use std::rc::Rc;
+use std::cell::RefCell;
+
+type Node = Option<Rc<RefCell<TreeNode>>>;
+
+struct TreeNode {
+    val: i32,
+    left: Node,
+    right: Node,
+}
+```
+
+これを型エイリアス (`type Node = ...`) しておくとツリー系が書きやすくなる！
