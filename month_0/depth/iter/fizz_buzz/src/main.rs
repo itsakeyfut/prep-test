@@ -14,6 +14,8 @@ impl Iterator for FizzBuzz {
             "FizzBuzz".to_string()
         } else if self.curr % 3 == 0 {
             "Fizz".to_string()
+        } else if self.curr % 5 == 0 {
+            "Buzz".to_string()
         } else {
             self.curr.to_string()
         };
