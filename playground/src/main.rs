@@ -8,8 +8,40 @@ fn bubble_sort(nums: &mut [i32]) {
             }
         }
     }
+}
 
+fn cocktail_sort(nums: &mut [i32]) {
+    let mut start = 0;
+    let mut end = nums.len() - 1;
+    let mut swapped = true;
 
+    while (swapped) {
+        swapped = false;
+
+        // Start 
+        for i in start..end {
+            if nums[i] > nums[i + 1] {
+                nums.swap(i, i + 1);
+                swapped = true;
+            }
+        }
+
+        if !swapped {
+            break;
+        }
+
+        end -= 1;
+        swapped = false;
+
+        for i in (start + 1..=end).rev() {
+            if nums[i - 1] > nums[i] {
+                nums.swap(i - 1, i);
+                swapped = true;
+            }
+        }
+
+        start += 1;
+    }
 }
 
 fn main() {
@@ -20,6 +52,6 @@ fn main() {
         .collect();
 
     println!("BEFORE: {:?}", nums);
-    bubble_sort(&mut nums);
+    cocktail_sort(&mut nums);
     println!("AFTER: {:?}", nums);
 }
