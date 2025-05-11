@@ -1,46 +1,21 @@
 use rand::Rng;
 
-fn bubble_sort(nums: &mut [i32]) {
-    for i in 0..nums.len() {
-        for j in 0..nums.len() - 1 - i {
-            if nums[j] > nums[j + 1] {
-                nums.swap(j, j + 1);
+fn shell_sort(nums: &mut Vec<i32>) {
+    let len = nums.len();
+    let mut gap = len / 2;
+
+    while gap > 0 {
+        for i in gap..len {
+            let tmp = nums[i];
+            let mut j = i;
+
+            while j >= gap && nums[j - gap] > tmp {
+                nums[j] = nums[j - gap];
+                j -= gap;
             }
+            nums[j] = tmp;
         }
-    }
-}
-
-fn cocktail_sort(nums: &mut [i32]) {
-    let mut start = 0;
-    let mut end = nums.len() - 1;
-    let mut swapped = true;
-
-    while (swapped) {
-        swapped = false;
-
-        // Start 
-        for i in start..end {
-            if nums[i] > nums[i + 1] {
-                nums.swap(i, i + 1);
-                swapped = true;
-            }
-        }
-
-        if !swapped {
-            break;
-        }
-
-        end -= 1;
-        swapped = false;
-
-        for i in (start + 1..=end).rev() {
-            if nums[i - 1] > nums[i] {
-                nums.swap(i - 1, i);
-                swapped = true;
-            }
-        }
-
-        start += 1;
+        gap /= 2;
     }
 }
 
@@ -52,6 +27,6 @@ fn main() {
         .collect();
 
     println!("BEFORE: {:?}", nums);
-    cocktail_sort(&mut nums);
+    shell_sort(&mut nums);
     println!("AFTER: {:?}", nums);
 }
