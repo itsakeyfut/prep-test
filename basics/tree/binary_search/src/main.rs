@@ -40,13 +40,6 @@ impl Node {
         }
     }
 
-    fn find_min(&self) -> i32 {
-        match self.left {
-            Some(ref left) => left.find_min(),
-            None => self.value,
-        }
-    }
-
     fn remove(self: Box<Self>, value: i32) -> Option<Box<Node>> {
         if value < self.value {
             Some(Box::new(Node {
@@ -63,7 +56,7 @@ impl Node {
         } else {
             match (self.left, self.right) {
                 (Some(left), Some(right)) => {
-                    let min_val = right.find_min();
+                    let min_val = right.min();
                     Some(Box::new(Node {
                         value: min_val,
                         left: Some(left),
@@ -77,6 +70,62 @@ impl Node {
         }
     }
 
+    fn min(&self) -> i32 {
+        match self.left {
+            Some(ref node) => node.min(),
+            None => self.value,
+        }
+    }
+
+    fn max(&self) -> i32 {
+        match self.right {
+            Some(ref node) => node.max(),
+            None => self.value,
+        }
+    }
+
+    fn pre_order(&self, result: &mut Vec<i32>) {
+        result.push(self.value);
+        if let Some(ref left) = self.left {
+            left.pre_order(result);
+        }
+        if let Some(ref right) = self.right {
+            right.pre_order(result);
+        }
+    }
+
+    fn post_order(&self, result: &mut Vec<i32>) {
+        if let Some(ref left) = self.left {
+            left.post_order(result);
+        }
+        if let Some(ref right) = self.right {
+            right.post_order(result);
+        }
+        result.push(self.value);
+    }
+
+    fn height(&self) -> i32 {
+        let left_height = self.left.as_ref().map_or(0, |node| node.height());
+        let right_height = self.right.as_ref().map_or(0, |node| node.height());
+        1 + left_height.max(right_height)
+    }
+
+    fn is_balanced(&self) -> bool {
+        fn check(node: &Option<Box<Node>>) -> (bool, i32) {
+            if let Some(n) = node {
+                let (left_bal, left_height) = check(&n.left);
+                let (right_bal, right_height) = check(&n.right);
+
+                let balanced = left_bal && right_bal && (left_height - right_height).abs() <= 1;
+                (balanced, 1 + left_height.max(right_height))
+            } else {
+                (true, 0)
+            }
+        }
+
+        check(&Some(Box::new(self.clone()))).0
+    }
+
     fn in_order(&self) {
         if let Some(ref left) = self.left {
             left.in_order();
@@ -84,6 +133,16 @@ impl Node {
         print!("{} ", self.value);
         if let Some(ref right) = self.right {
             right.in_order();
+        }
+    }
+}
+
+impl Clone for Node {
+    fn clone(&self) -> Self {
+        Node {
+            value: self.value,
+            left: self.left.clone(),
+            right: self.right.clone(),
         }
     }
 }
@@ -105,15 +164,44 @@ impl BST {
         }
     }
 
-    fn contains(&self, value: i32) -> bool {
-        match self.root {
-            Some(ref node) => node.contains(value),
-            None => false,
-        }
-    }
-
     fn remove(&mut self, value: i32) {
         self.root = self.root.take().and_then(|node| node.remove(value));
+    }
+
+    fn contains(&self, value: i32) -> bool {
+        self.root.as_ref().map_or(false, |node| node.contains(value))
+    }
+
+    fn min(&self) -> Option<i32> {
+        self.root.as_ref().map(|node| node.min())
+    }
+
+    fn max(&self) -> Option<i32> {
+        self.root.as_ref().map(|node| node.max())
+    }
+
+    fn pre_order(&self) -> Vec<i32> {
+        let mut result = Vec::new();
+        if let Some(ref node) = self.root {
+            node.pre_order(&mut result);
+        }
+        result
+    }
+
+    fn post_order(&self) -> Vec<i32> {
+        let mut result = Vec::new();
+        if let Some(ref node) = self.root {
+            node.post_order(&mut result);
+        }
+        result
+    }
+
+    fn height(&self) -> i32 {
+        self.root.as_ref().map_or(0, |node| node.height())
+    }
+
+    fn is_balanced(&self) -> bool {
+        self.root.as_ref().map_or(true, |node| node.is_balanced())
     }
 
     fn print_in_order(&self) {
@@ -141,6 +229,12 @@ fn main() {
 
     println!("Contains 6? {}", bst.contains(6)); // true
     println!("Contains 13? {}", bst.contains(13)); // false
+    println!("Min: {:?}", bst.min()); // Some(1)
+    println!("Max: {:?}", bst.max()); // Some(14)
+    println!("Pre-order: {:?}", bst.pre_order()); // [8, 3, 1, 6, 4, 7, 10, 14]
+    println!("Post-order: {:?}", bst.post_order()); // [1, 4, 7, 6, 3, 14, 10, 8]
+    println!("Height: {}", bst.height()); // 4
+    println!("Is Balanced: {}", bst.is_balanced()); // true
 
     bst.remove(3);
     bst.print_in_order(); // 1 4 6 7 8 10 14
