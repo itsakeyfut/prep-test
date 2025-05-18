@@ -1,3 +1,4 @@
 **/target
+**/*.lock
 memo.md
 goal.md
